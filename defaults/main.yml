@@ -1,0 +1,9 @@
+
+---
+# defaults file for vector-role
+vector_version: "0.22.1"
+vector_home: "/tmp/vector"
+vector_url: "https://packages.timber.io/vector/{{ vector_version }}/vector-{{ vector_version }}-1.x86_64.rpm"
+vector_user: "vector"
+vector_group: "vector"
+vector_environment_file: "/etc/default/vector"

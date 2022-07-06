@@ -1,0 +1,33 @@
+---
+    - name: Create vector_home dir
+      file:
+        path: "{{ vector_home }}"
+        state: directory
+        mode: 0777
+    - name: Get vector distrib
+      ansible.builtin.get_url:
+        url: "{{ vector_url }}"
+        dest: "{{ vector_home }}/vector-{{ vector_version }}-1.x86_64.rpm"
+    - name: Create folder for unit-file
+      become: true
+      ansible.builtin.file:
+        path: "/etc/systemd/system/multi-user.target.wants/vector.service.d"
+        state: directory
+        mode: "0755"
+        owner: "root"
+        group: "root"
+    - name: Create vector.service-file from template
+      become: true
+      ansible.builtin.template:
+        src: "vector.j2"
+        dest: "/etc/systemd/system/multi-user.target.wants/vector.service.d/override.conf"
+        owner: "root"
+        group: "root"
+        mode: "0755"
+        backup: true
+    - name: Install vector packages
+      become: true
+      ansible.builtin.yum:
+        name: "{{ vector_home }}/vector-{{ vector_version }}-1.x86_64.rpm"
+        disable_gpg_check: true
+      notify: Start Vector service
